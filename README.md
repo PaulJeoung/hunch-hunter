@@ -1,18 +1,18 @@
-# 🛰️ HUNCH Hunter (Shadow Raiders)
+# HUNCH Hunter
 > **국내 주식 퀀트 수급 스크리너 & 종가 배팅 SaaS 플랫폼**
 
-HUNCH Hunter(Shadow Raiders)는 국내 주식 시장(KRX)의 거래대금 상위 종목을 대상으로 기관·외국인의 비정상적인 매집 흔적을 추적하는 **'흔적 레이더'**와 당일 장 마감 전 거래대금 및 체결 강도(CVD/OBV) 기반의 **'단기 종가 배팅'** 신호를 자동으로 추출·서빙하는 핀테크 웹 서비스입니다.
+HUNCH Hunter는 KRX의 거래대금 상위 종목을 대상으로 기관·외국인의 비정상적인 매집 흔적을 트레이싱하는 **'그림자 추적 프로그램'**과 당일 장 마감 전 거래대금 및 체결 강도(CVD/OBV) 기반의 **'단기 종가 배팅'** 신호를 자동으로 추출·서빙하는 핀테크 웹 서비스입니다.
 
 ---
 
 ## 📌 주요 핵심 기능
 
-### 1. 📊 시장 공개 대시보드 (Public)
+### 1. 시장 공개 대시보드 (Public)
 * **거래대금 TOP 50**: 시장 중심 주도주 실시간/일별 랭킹
 * **국내 지표 TOP 10**: 당일(또는 최근 거래일) 급등, 급락, 시가총액 상위 종목 브리핑
 * **스마트 마켓 타임 감지**: 장전/장중/장마감/휴일 주기에 맞춰 유효 거래일 및 안내 라벨(`최근 거래일 기준`, `당일 기준` 등) 자동 분기
 
-### 2. 💎 세력 흔적 레이더 (Trace Radar / Protected)
+### 2. 세력 흔적 레이더 (Trace Radar / Protected)
 * **유니버스**: 거래대금 상위 500개 종목 추출
 * **수급 다이버전스 필터**: 개인 순매도 < 0 AND (외국인 + 기관 순매수) > 0
 * **가격 잠잠 & 거래량 이상치**: 최근 5일 변동성(ATR) 축소 구간에서 거래량 Z-Score $\ge 1.2$ 이상인 매집 각인 포착
@@ -32,27 +32,27 @@ HUNCH Hunter(Shadow Raiders)는 국내 주식 시장(KRX)의 거래대금 상위
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                   Frontend (Render Static Site)                  │
-│       Vue 3 (Composition API) + Vite + TailwindCSS + Pinia        │
+│                   Frontend (Web Application Site)                │
+│       Vue 3 (Composition API) + Vite + TailwindCSS + Pinia       │
 └─────────────────────────────────▲────────────────────────────────┘
                                   │ HTTPS (REST API)
 ┌─────────────────────────────────▼────────────────────────────────┐
-│                   Backend (Render Web Service)                   │
+│                   Backend (Renderer Web Service)                 │
 │             FastAPI + Python 3.12 + PyJWT (RBAC Auth)            │
 └─────────────────┬───────────────────────────────┬────────────────┘
                   │                               │
 ┌─────────────────▼───────────────┐ ┌─────────────▼────────────────┐
 │   Automated Batch Pipelines     │ │       Database Layer         │
 │        (GitHub Actions)         │ │         (Supabase)           │
-│  - screener_batch.py (흔적 레이더)│ │  - PostgreSQL (Signals/Meta)   │
-│  - closing_bet_batch.py (종가배팅)│ │  - Supabase Auth (JWT)         │
-│  - FinanceDataReader / OpenDART │ │  - Row Level Security (RLS)    │
+│  - screener_batch.py            │ │  - PostgreSQL (Signals/Meta) │
+│  - closing_bet_batch.py         │ │  - Supabase Auth (JWT)       │
+│  - FinanceDataReader / OpenDART │ │  - Row Level Security (RLS)  │
 └─────────────────────────────────┘ └──────────────────────────────┘
 ```
 
 ---
 
-## 🛠️ 기술 스택 (Tech Stack)
+## Tech Stack
 
 ### Frontend
 * **Core**: Vue 3 (Composition API, `<script setup>`), Vite
@@ -73,7 +73,7 @@ HUNCH Hunter(Shadow Raiders)는 국내 주식 시장(KRX)의 거래대금 상위
 
 ---
 
-## 📂 프로젝트 디렉터리 구조
+## Project Architecture
 
 ```text
 shadow-raiders/
@@ -86,10 +86,10 @@ shadow-raiders/
 │   │   │   └── security.py       # JWT 토큰 디코딩 및 RBAC 인가
 │   │   ├── routers/
 │   │   │   ├── market.py         # 공개 시장 지표 (거래대금 TOP 50, 급등락 TOP 10)
-│   │   │   ├── radar.py          # 흔적 레이더 매집 시그널 API (보호)
+│   │   │   ├── radar.py          # 매집 시그널 API (보호)
 │   │   │   └── closing_bet.py    # 종가 배팅 시그널 API (보호)
 │   │   └── main.py               # FastAPI 진입점 및 CORS 설정
-│   ├── screener_batch.py         # 흔적 레이더 일일 수집/점수화 배치
+│   ├── screener_batch.py         # 일일 수집/점수화 배치
 │   ├── closing_bet_batch.py      # 종가 배팅 일일 수집 배치
 │   ├── requirements.txt          # 백엔드 의존성 파일
 │   └── .env                      # 백엔드 환경 변수 (Git 추적 제외)
@@ -103,7 +103,7 @@ shadow-raiders/
 │   │   │   ├── containers/       # 섹션별 뷰 컨테이너 (Dashboard / Signals)
 │   │   │   ├── layout/           # AppHeader 등
 │   │   │   ├── market/           # 공개 시장 지표 컴포넌트
-│   │   │   └── radar/            # 흔적 레이더 테이블 및 가이드 모달
+│   │   │   └── radar/            # 테이블 및 가이드 모달
 │   │   ├── composables/
 │   │   │   └── useStockData.js   # API 호출 & 상태 관리 컴포저블
 │   │   ├── supabase.js           # Supabase 클라이언트 초기화
@@ -117,7 +117,7 @@ shadow-raiders/
 
 ---
 
-## ⚙️ 환경 변수 설정 (Environment Variables)
+## Environment Variables
 
 ### 1. Backend (`backend/.env`)
 ```env
@@ -141,7 +141,7 @@ VITE_SUPABASE_ANON_KEY="eyJhbGciOi... (anon public 키)"
 
 ---
 
-## 🚀 로컬 개발 환경 실행 방법 (Getting Started)
+## Getting Started For Local
 
 ### 1. Database 설정 (Supabase SQL Editor)
 프로젝트 초기화 시 다음 테이블을 생성합니다:
@@ -185,7 +185,7 @@ npm run dev
 
 ---
 
-## 🌐 배포 및 운영 자동화 (Production & CI/CD)
+## Production & CI/CD
 
 1. **배치 자동화 (GitHub Actions)**:
    * 매주 월~금 16:00 KST (07:00 UTC)에 `daily_batch.yml`이 자동 구동되어 최신 수급/시세를 파싱하고 Supabase에 Upsert합니다.
