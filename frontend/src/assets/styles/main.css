@@ -1,0 +1,42 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    image-rendering: pixelated;
+  }
+}
+
+@layer components {
+  /* 도트 패널 (다크/라이트 완벽 대응 및 모바일 패딩 조정) */
+  .dot-panel {
+    @apply border-2 p-3 sm:p-5 transition-none;
+    @apply bg-white border-zinc-900 text-zinc-900 shadow-[4px_4px_0px_0px_#18181b];
+    @apply dark:bg-zinc-950 dark:border-zinc-700 dark:text-zinc-100 dark:shadow-[4px_4px_0px_0px_#27272a];
+  }
+
+  /* 미니 도트 패널 */
+  .dot-mini-panel {
+    @apply border-2 p-3 sm:p-4 transition-none;
+    @apply bg-zinc-50 border-zinc-900 text-zinc-900 shadow-[3px_3px_0px_0px_#18181b];
+    @apply dark:bg-zinc-900/60 dark:border-zinc-800 dark:text-zinc-100 dark:shadow-[3px_3px_0px_0px_#27272a];
+  }
+
+  /* 도트 버튼 (터치 모바일 및 데스크톱) */
+  .dot-btn {
+    @apply border-2 px-2.5 py-1.5 sm:px-3 sm:py-1.5 font-bold inline-flex items-center justify-center gap-1.5 active:translate-x-0.5 active:translate-y-0.5 select-none text-xs;
+    @apply border-zinc-900 shadow-[3px_3px_0px_0px_#18181b] active:shadow-[1px_1px_0px_0px_#18181b];
+    @apply dark:border-zinc-600 dark:shadow-[3px_3px_0px_0px_#3f3f46] dark:active:shadow-[1px_1px_0px_0px_#3f3f46];
+  }
+
+  /* 테이블 헤더 & 로우 */
+  .dot-th {
+    @apply py-2 px-2 sm:px-3 border-b-2 border-zinc-900 dark:border-zinc-700 text-left font-bold whitespace-nowrap;
+  }
+
+  .dot-tr {
+    @apply border-b border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900/80 transition-none;
+  }
+}
