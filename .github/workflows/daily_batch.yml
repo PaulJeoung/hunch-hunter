@@ -1,0 +1,44 @@
+name: Daily Stock Screener & Closing Bet Batch
+
+on:
+  schedule:
+    # 월~금 한국시간 16:00 (UTC 07:00) 장 마감 후 자동 실행
+    - cron: '0 7 * * 1-5'
+  workflow_dispatch: # Actions 탭에서 수동 실행(Run workflow) 버튼 활성화
+
+jobs:
+  run-batch:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Screener Batch (세력 흔적 포착)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
+        run: |
+          python screener_batch.py
+
+      - name: Run Closing Bet Batch (종가 배팅 포착)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          python closing_bet_batch.py
