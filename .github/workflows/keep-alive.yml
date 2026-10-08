@@ -1,16 +1,44 @@
-name: Keep Render Alive (Ping)
+# .github/workflows/keep-alive.yml
+name: Keep Render API Alive
 
 on:
   schedule:
-    # 5분마다 실행 (UTC 기준)
-    - cron: '*/5 * * * *'
-  workflow_dispatch: # 수동 즉시 실행 트리거 활성화
+    # 10분마다 실행하지만, 아래 조건에서 한국시간 06:00~23:59만 허용
+    - cron: '*/10 * * * *'
+
+  # Actions 탭에서 수동 실행 테스트용
+  workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Ping Render Health Check
+      - name: Determine Korea time window
+        id: time
         run: |
-          # Render 무료 티어 깨우기 (타임아웃 60초, 실패 시 3회 재시도)
-          curl -sS --max-time 60 --retry 3 --retry-delay 5 https://shadow-raiders-api.onrender.com/health || true
+          KST_HOUR=$(TZ=Asia/Seoul date +%H)
+          echo "KST_HOUR=$KST_HOUR" >> "$GITHUB_OUTPUT"
+
+          if [ "$KST_HOUR" -ge 6 ] && [ "$KST_HOUR" -lt 24 ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Ping Render health endpoint
+        if: steps.time.outputs.should_run == 'true'
+        env:
+          HEALTH_URL: ${{ secrets.RENDER_HEALTH_URL }}
+        run: |
+          echo "KST hour: $(TZ=Asia/Seoul date +%H:%M)"
+          curl -fsS \
+            --retry 2 \
+            --retry-delay 5 \
+            --max-time 20 \
+            "$HEALTH_URL"
+
+      - name: Skip outside operating hours
+        if: steps.time.outputs.should_run == 'false'
+        run: |
+          echo "한국시간 $(TZ=Asia/Seoul date +%H:%M) — 운영 시간(06:00~24:00) 밖이므로 skip합니다."
