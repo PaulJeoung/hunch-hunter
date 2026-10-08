@@ -24,9 +24,16 @@
             :key="stock.ticker" 
             class="flex justify-between items-center py-1 border-b border-dashed border-zinc-200 dark:border-zinc-800/80"
           >
-            <span class="truncate max-w-[150px] font-medium text-zinc-800 dark:text-zinc-200">
-              {{ idx + 1 }}. {{ stock.name }}
-            </span>
+            <a 
+              :href="getTossUrl(stock.ticker)" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="truncate max-w-[150px] font-medium text-zinc-800 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-blue-400 hover:underline inline-flex items-center gap-1 group"
+              title="토스증권 시세 조회로 이동"
+            >
+              <span>{{ idx + 1 }}. {{ stock.name }}</span>
+              <i class="bi bi-box-arrow-up-right text-[9px] opacity-0 group-hover:opacity-100"></i>
+            </a>
             <span class="text-red-500 dark:text-red-400 font-mono font-bold">
               +{{ stock.change_rate }}%
             </span>
@@ -49,9 +56,16 @@
             :key="stock.ticker" 
             class="flex justify-between items-center py-1 border-b border-dashed border-zinc-200 dark:border-zinc-800/80"
           >
-            <span class="truncate max-w-[150px] font-medium text-zinc-800 dark:text-zinc-200">
-              {{ idx + 1 }}. {{ stock.name }}
-            </span>
+            <a 
+              :href="getTossUrl(stock.ticker)" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="truncate max-w-[150px] font-medium text-zinc-800 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-blue-400 hover:underline inline-flex items-center gap-1 group"
+              title="토스증권 시세 조회로 이동"
+            >
+              <span>{{ idx + 1 }}. {{ stock.name }}</span>
+              <i class="bi bi-box-arrow-up-right text-[9px] opacity-0 group-hover:opacity-100"></i>
+            </a>
             <span class="text-blue-500 dark:text-blue-400 font-mono font-bold">
               {{ stock.change_rate }}%
             </span>
@@ -74,9 +88,16 @@
             :key="stock.ticker" 
             class="flex justify-between items-center py-1 border-b border-dashed border-zinc-200 dark:border-zinc-800/80"
           >
-            <span class="truncate max-w-[140px] font-medium text-zinc-800 dark:text-zinc-200">
-              {{ idx + 1 }}. {{ stock.name }}
-            </span>
+            <a 
+              :href="getTossUrl(stock.ticker)" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="truncate max-w-[140px] font-medium text-zinc-800 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-blue-400 hover:underline inline-flex items-center gap-1 group"
+              title="토스증권 시세 조회로 이동"
+            >
+              <span>{{ idx + 1 }}. {{ stock.name }}</span>
+              <i class="bi bi-box-arrow-up-right text-[9px] opacity-0 group-hover:opacity-100"></i>
+            </a>
             <span class="text-zinc-600 dark:text-zinc-400 font-mono">
               {{ stock.close?.toLocaleString() }}원
             </span>
@@ -96,6 +117,13 @@ defineProps({
   marketDate: { type: String, default: '' },
   statusLabel: { type: String, default: '최근 거래일' }
 })
+
+// 토스증권 상세 주문 URL 생성 함수
+const getTossUrl = (ticker) => {
+  if (!ticker) return '#'
+  const cleanTicker = String(ticker).replace(/^A/, '').padStart(6, '0')
+  return `https://www.tossinvest.com/stocks/A${cleanTicker}/order`
+}
 
 const formatDate = (str) => {
   if (!str || str.length !== 8) return str

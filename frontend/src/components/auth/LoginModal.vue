@@ -21,7 +21,7 @@
         <h3 class="text-lg font-black tracking-wider text-emerald-400 flex items-center justify-center gap-2">
           <i class="bi bi-shield-lock-fill"></i> HUNCH HUNTER LOGIN
         </h3>
-        <p class="text-xs text-zinc-400 mt-1">시그널 조회를 위한 계정으로 로그인하세요</p>
+        <p class="text-xs text-zinc-400 mt-1">KOSPI & KOSDAQ RAIDER</p>
       </div>
 
       <form @submit.prevent="submitLogin" class="space-y-4">
@@ -72,7 +72,7 @@
       </form>
 
       <!-- 간편 소셜 로그인 확장 영역 -->
-      <div class="mt-6 pt-5 border-t border-zinc-800">
+      <!-- <div class="mt-6 pt-5 border-t border-zinc-800">
         <p class="text-[11px] text-zinc-400 text-center mb-3">간편 소셜 로그인 (연동 지원)</p>
         <div class="grid grid-cols-3 gap-2">
           <button 
@@ -99,7 +99,7 @@
             <span class="font-black text-xs">N</span> Naver
           </button>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

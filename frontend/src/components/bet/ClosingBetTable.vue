@@ -17,8 +17,18 @@
         </thead>
         <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
           <tr v-for="item in betData?.data" :key="item.ticker" class="dot-tr">
-            <td class="py-2.5 px-3 font-sans font-bold text-zinc-900 dark:text-zinc-100 truncate">
-              {{ item.stocks?.name || item.name || item.ticker }}
+            <td class="py-2.5 px-3 font-sans font-bold truncate">
+              <!-- 토스증권 상세 페이지 링크 -->
+              <a 
+                :href="getTossUrl(item.ticker)" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="text-zinc-900 dark:text-zinc-100 hover:text-blue-600 dark:hover:text-blue-400 hover:underline inline-flex items-center gap-1 group"
+                title="토스증권 시세 조회로 이동"
+              >
+                <span>{{ item.stocks?.name || item.name || item.ticker }}</span>
+                <i class="bi bi-box-arrow-up-right text-[10px] opacity-40 group-hover:opacity-100"></i>
+              </a>
             </td>
             <td class="py-2.5 px-3 text-zinc-800 dark:text-zinc-200">{{ item.close_price?.toLocaleString() }}원</td>
             <td class="py-2.5 px-3 font-bold" :class="item.day_return >= 0 ? 'text-red-500' : 'text-blue-500'">
@@ -62,4 +72,11 @@
 defineProps({
   betData: { type: Object, default: () => null }
 })
+
+// 토스증권 상세 주문 URL 생성 함수
+const getTossUrl = (ticker) => {
+  if (!ticker) return '#'
+  const cleanTicker = String(ticker).replace(/^A/, '').padStart(6, '0')
+  return `https://www.tossinvest.com/stocks/A${cleanTicker}/order`
+}
 </script>

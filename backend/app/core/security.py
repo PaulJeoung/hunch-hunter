@@ -13,12 +13,13 @@ security = HTTPBearer(auto_error=False)
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Optional[Client] = create_client(SUPABASE_URL, SUPABASE_KEY) if (SUPABASE_URL and SUPABASE_KEY) else None
 
 class CurrentUser(BaseModel):
     id: str
     email: str
     role: str = "USER"
+    subscription_status: str = "FREE"
 
 def get_current_user(credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)) -> CurrentUser:
     if not credentials:
@@ -37,14 +38,31 @@ def get_current_user(credentials: Optional[HTTPAuthorizationCredentials] = Depen
         user_id = payload.get("sub", "")
         email = payload.get("email", "")
 
-        # 🔹 DB의 user_profiles 테이블에서 실제 role 조회
         role = "USER"
-        if user_id:
-            profile_res = supabase.table("user_profiles").select("role").eq("id", user_id).execute()
-            if profile_res.data and len(profile_res.data) > 0:
-                role = profile_res.data[0].get("role", "USER")
+        status_val = "FREE"
 
-        return CurrentUser(id=user_id, email=email, role=role)
+        if supabase and user_id:
+            try:
+                res = (
+                    supabase.table("user_profiles")
+                    .select("role, subscription_status")
+                    .eq("id", user_id)
+                    .limit(1)
+                    .execute()
+                )
+                if res.data and len(res.data) > 0:
+                    profile = res.data[0]
+                    role = profile.get("role", "USER")
+                    status_val = profile.get("subscription_status", "FREE")
+            except Exception as db_err:
+                print(f"[Security Warning] DB 프로필 조회 실패: {db_err}")
+
+        return CurrentUser(
+            id=user_id,
+            email=email,
+            role=role,
+            subscription_status=status_val
+        )
     except Exception as e:
         print(f"[Security Warning] 토큰 디코딩 실패: {e}")
         raise HTTPException(

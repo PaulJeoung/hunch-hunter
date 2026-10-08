@@ -11,14 +11,14 @@
             HUNCH HUNTER
           </span>
           <span class="hidden sm:inline-block text-[10px] px-1 py-0.5 border border-zinc-900 dark:border-zinc-700 bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono">
-            v1.1.0
+            polling system
           </span>
         </div>
       </div>
 
-      <!-- 우측 컨트롤 버튼 (테마 토글 & 로그인) -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <!-- 다크/라이트 모드 버튼 -->
+      <!-- 우측 컨트롤 버튼 (테마 토글, 회원 등급 안내, 로그인) -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <!-- 1. 다크/라이트 모드 버튼 -->
         <button 
           @click="toggleTheme" 
           class="dot-btn bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200"
@@ -28,15 +28,26 @@
           <span class="text-xs">{{ isDark ? 'LIGHT' : 'DARK' }}</span>
         </button>
 
+        <!-- 2. [추가] 테마 버튼 바로 옆 회원 등급 안내 버튼 -->
+        <button 
+          @click="$emit('openTierGuide')"
+          class="dot-btn bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200"
+          title="회원 등급 및 혜택 안내"
+        >
+          <i class="bi bi-shield-shaded text-emerald-500"></i>
+          <span class="text-xs">TIER ?</span>
+        </button>
+
+        <!-- 3. 로그인/유저 상태 -->
         <button 
           v-if="!user" 
           @click="$emit('login')" 
-          class="dot-btn bg-emerald-400 hover:bg-emerald-300 text-zinc-950 font-bold"
+          class="dot-btn bg-emerald-400 hover:bg-emerald-300 text-zinc-950 font-bold ml-1"
         >
           <i class="bi bi-box-arrow-in-right"></i>
           <span>LOGIN</span>
         </button>
-        <div v-else class="flex items-center gap-1.5 sm:gap-2 text-xs">
+        <div v-else class="flex items-center gap-1.5 sm:gap-2 text-xs ml-1">
           <span class="hidden md:inline-block border border-zinc-400 dark:border-zinc-700 px-2 py-1 bg-zinc-200 dark:bg-zinc-900 font-mono text-zinc-700 dark:text-zinc-300">
             <i class="bi bi-person-fill mr-1"></i>{{ user.email }}
           </span>
@@ -61,5 +72,5 @@ const { isDark, toggleTheme } = useTheme()
 defineProps({
   user: { type: Object, default: null }
 })
-defineEmits(['login', 'logout'])
+defineEmits(['login', 'logout', 'openTierGuide'])
 </script>

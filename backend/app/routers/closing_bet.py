@@ -8,7 +8,7 @@ router = APIRouter(prefix="/api/closing-bet", tags=["Closing Bet"])
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if (SUPABASE_URL and SUPABASE_KEY) else None
 
 @router.get("/signals")
 def get_closing_bet_signals(
@@ -30,17 +30,31 @@ def get_closing_bet_signals(
     res = query.execute()
     data = res.data or []
 
+    # 1. PRO 미승인(DEACTIVE) 대기 상태 -> 1종목만 제한 제공
+    if user.role == "PRO" and user.subscription_status == "DEACTIVE":
+        return {
+            "tier": "PENDING",
+            "is_truncated": True,
+            "message": "현재 관리자 승인 대기 중입니다.",
+            "total_count": len(data),
+            "data": data[:1]
+        }
+
+    # 2. 일반 무료 유저 (USER) -> 3종목 제공
     if user.role == "USER":
         return {
             "tier": "FREE",
             "is_truncated": True,
+            "message": "PRO 구독 시 전체 발굴 종목을 모두 열람하실 수 있습니다.",
             "total_count": len(data),
             "data": data[:3]
         }
 
+    # 3. 승인된 PRO 또는 ADMIN -> 전체 종목 제공
     return {
         "tier": user.role,
         "is_truncated": False,
+        "message": "",
         "total_count": len(data),
         "data": data
     }
