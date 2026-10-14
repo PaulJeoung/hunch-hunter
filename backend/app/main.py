@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import market, radar, closing_bet
+from app.routers import market, radar, closing_bet, cross_analysis
 
 ENVIRONMENT = os.getenv("ENVIRONMENT", "production").lower()
 is_production = ENVIRONMENT == "production"
@@ -32,6 +32,7 @@ app.add_middleware(
 app.include_router(market.router)
 app.include_router(radar.router)
 app.include_router(closing_bet.router)
+app.include_router(cross_analysis.router)
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 def health_check():

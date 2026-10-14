@@ -17,6 +17,7 @@
         :isLoading="isLoading"
         :radarData="radarData"
         :betData="betData"
+        :overlapData="overlapData"
         @openRadarHelp="isHelpModalOpen = true"
         @openBetHelp="isBetHelpModalOpen = true"
         @login="openLoginModal"
