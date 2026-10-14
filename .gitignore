@@ -9,6 +9,10 @@ backend/.python-version
 *$py.class
 backend/.pytest_cache/
 
+# Admin CLI Scripts (Git 제외)
+backend/member.py
+member.py
+
 # ==============================
 # Node / Frontend
 # ==============================
